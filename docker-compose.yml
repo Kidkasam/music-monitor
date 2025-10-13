@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  music-monitor:
+    build: .
+    container_name: music-monitor
+    restart: unless-stopped
+    environment:
+      - SECRET_TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - SECRET_TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - SECRET_TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+      - SECRET_YOUR_PHONE_NUMBER=${YOUR_PHONE_NUMBER}
+      - SECRET_TICKETMASTER_API_KEY=${TICKETMASTER_API_KEY}
+      - TZ=America/New_York
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ./config:/app/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

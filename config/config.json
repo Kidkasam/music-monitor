@@ -1,0 +1,14 @@
+{
+  "taylor_swift_enabled": true,
+  "bandsintown_enabled": true,
+  "bandsintown_artists": [
+    "Taylor Swift",
+    "The 1975",
+    "Arctic Monkeys",
+    "Billie Eilish",
+    "Olivia Rodrigo"
+  ],
+  "ticketmaster_enabled": false,
+  "ticketmaster_artists": [],
+  "check_interval": 300
+}
