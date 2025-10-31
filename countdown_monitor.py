@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-import requests
+import aiohttp
 from bs4 import BeautifulSoup
-import time
+import asyncio
 import json
 from datetime import datetime
 import re
 import os
 from pathlib import Path
 from twilio.rest import Client
+import aiofiles
 
 class TaylorSwiftCountdownMonitor:
     def __init__(self):
@@ -35,66 +36,71 @@ class TaylorSwiftCountdownMonitor:
         else:
             self.log("⚠️  Twilio not configured - SMS notifications disabled")
         
-        # Ensure directories exist
         Path("/app/logs").mkdir(parents=True, exist_ok=True)
         Path("/app/data").mkdir(parents=True, exist_ok=True)
         
-        # Load previous state
-        self.previous_countdowns = self.load_state()
-        
-    def log(self, message):
+        self.previous_countdowns = None
+    
+    async def initialize(self):
+        self.previous_countdowns = await self.load_state()
+    
+    async def log(self, message):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         log_message = f"[{timestamp}] {message}"
         print(log_message, flush=True)
         try:
-            with open(self.log_file, "a") as f:
-                f.write(log_message + "\n")
+            async with aiofiles.open(self.log_file, "a") as f:
+                await f.write(log_message + "\n")
         except Exception as e:
             print(f"Error writing to log: {e}")
     
-    def send_sms(self, message):
+    async def send_sms(self, message):
         if not self.twilio_enabled:
             return False
         
         try:
-            msg = self.twilio_client.messages.create(
+            msg = await asyncio.to_thread(
+                self.twilio_client.messages.create,
                 body=message,
                 from_=self.twilio_from,
                 to=self.twilio_to
             )
-            self.log(f"📱 SMS sent successfully (SID: {msg.sid})")
+            await self.log(f"📱 SMS sent successfully (SID: {msg.sid})")
             return True
         except Exception as e:
-            self.log(f"❌ Failed to send SMS: {str(e)}")
+            await self.log(f"❌ Failed to send SMS: {str(e)}")
             return False
     
-    def load_state(self):
+    async def load_state(self):
         if os.path.exists(self.state_file):
             try:
-                with open(self.state_file, "r") as f:
-                    return json.load(f)
+                async with aiofiles.open(self.state_file, "r") as f:
+                    content = await f.read()
+                    return json.loads(content)
             except:
                 return {}
         return {}
     
-    def save_state(self, countdowns):
+    async def save_state(self, countdowns):
         try:
-            with open(self.state_file, "w") as f:
-                json.dump(countdowns, f, indent=2)
+            async with aiofiles.open(self.state_file, "w") as f:
+                await f.write(json.dumps(countdowns, indent=2))
         except Exception as e:
-            self.log(f"Error saving state: {e}")
+            await self.log(f"Error saving state: {e}")
     
-    def check_for_countdown(self):
+    async def check_for_countdown(self):
         try:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
             }
             
-            self.log(f"Checking {self.url}...")
-            response = requests.get(self.url, headers=headers, timeout=30)
-            response.raise_for_status()
+            await self.log(f"Checking {self.url}...")
+            async with aiohttp.ClientSession() as session:
+                async with session.get(self.url, headers=headers, timeout=aiohttp.ClientTimeout(total=30)) as response:
+                    response.raise_for_status()
+                    html = await response.text()
             
-            soup = BeautifulSoup(response.text, 'html.parser')
+            soup = BeautifulSoup(html, 'html.parser')
             
             # Look for countdown indicators
             countdowns_found = []
@@ -150,35 +156,33 @@ class TaylorSwiftCountdownMonitor:
             return countdowns_found
             
         except Exception as e:
-            self.log(f"Error checking website: {str(e)}")
+            await self.log(f"Error checking website: {str(e)}")
             return None
     
-    def monitor(self):
-        self.log("🎵 Starting Taylor Swift Store Countdown Monitor")
-        self.log(f"📍 Monitoring: {self.url}")
-        self.log(f"⏱️  Check interval: {self.check_interval} seconds")
+    async def monitor(self):
+        await self.log("🎵 Starting Taylor Swift Store Countdown Monitor")
+        await self.log(f"📍 Monitoring: {self.url}")
+        await self.log(f"⏱️  Check interval: {self.check_interval} seconds")
         
-        # Send startup notification
         if self.twilio_enabled:
-            self.send_sms("🎵 Taylor Swift countdown monitor started! You'll be notified when a new countdown appears on store.taylorswift.com")
+            await self.send_sms("🎵 Taylor Swift countdown monitor started! You'll be notified when a new countdown appears on store.taylorswift.com")
         
         check_count = 0
         
         try:
             while True:
                 check_count += 1
-                countdowns = self.check_for_countdown()
+                countdowns = await self.check_for_countdown()
                 
                 if countdowns is not None:
                     if len(countdowns) > 0:
                         countdown_hash = json.dumps(countdowns, sort_keys=True)
                         
                         if countdown_hash != self.previous_countdowns.get('hash'):
-                            self.log(f"🎉 NEW COUNTDOWN DETECTED! Found {len(countdowns)} countdown element(s)")
+                            await self.log(f"🎉 NEW COUNTDOWN DETECTED! Found {len(countdowns)} countdown element(s)")
                             
-                            # Extract key info for SMS
                             countdown_texts = []
-                            for cd in countdowns[:3]:  # First 3 countdowns
+                            for cd in countdowns[:3]:
                                 if cd.get('text'):
                                     countdown_texts.append(cd['text'][:100])
                             
@@ -187,38 +191,39 @@ class TaylorSwiftCountdownMonitor:
                             if countdown_texts:
                                 sms_message += "Preview:\n" + "\n".join(countdown_texts[:2])
                             
-                            self.send_sms(sms_message)
+                            await self.send_sms(sms_message)
                             
                             self.previous_countdowns = {
                                 'hash': countdown_hash,
                                 'timestamp': datetime.now().isoformat(),
                                 'count': len(countdowns)
                             }
-                            self.save_state(self.previous_countdowns)
+                            await self.save_state(self.previous_countdowns)
                         else:
-                            self.log(f"✓ Countdown still active ({len(countdowns)} elements, no changes)")
+                            await self.log(f"✓ Countdown still active ({len(countdowns)} elements, no changes)")
                     else:
                         if self.previous_countdowns.get('hash'):
-                            self.log("📭 No countdown detected (countdown may have ended)")
-                            self.send_sms("ℹ️ Taylor Swift countdown has ended or been removed from store.taylorswift.com")
+                            await self.log("📭 No countdown detected (countdown may have ended)")
+                            await self.send_sms("ℹ️ Taylor Swift countdown has ended or been removed from store.taylorswift.com")
                             self.previous_countdowns = {}
-                            self.save_state(self.previous_countdowns)
+                            await self.save_state(self.previous_countdowns)
                         else:
-                            self.log("📭 No countdown detected")
+                            await self.log("📭 No countdown detected")
                 
-                self.log(f"💤 Sleeping {self.check_interval}s (check #{check_count})")
-                time.sleep(self.check_interval)
+                await self.log(f"💤 Sleeping {self.check_interval}s (check #{check_count})")
+                await asyncio.sleep(self.check_interval)
                 
         except KeyboardInterrupt:
-            self.log("🛑 Monitor stopped by user")
+            await self.log("🛑 Monitor stopped by user")
             if self.twilio_enabled:
-                self.send_sms("🛑 Taylor Swift countdown monitor stopped")
+                await self.send_sms("🛑 Taylor Swift countdown monitor stopped")
         except Exception as e:
-            self.log(f"❌ Monitor error: {str(e)}")
+            await self.log(f"❌ Monitor error: {str(e)}")
             if self.twilio_enabled:
-                self.send_sms(f"❌ Taylor Swift monitor encountered an error: {str(e)}")
+                await self.send_sms(f"❌ Taylor Swift monitor encountered an error: {str(e)}")
             raise
 
 if __name__ == "__main__":
     monitor = TaylorSwiftCountdownMonitor()
-    monitor.monitor()
+    asyncio.run(monitor.initialize())
+    asyncio.run(monitor.monitor())

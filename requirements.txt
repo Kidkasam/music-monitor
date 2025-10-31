@@ -1,3 +1,4 @@
-requests==2.31.0
+aiohttp==3.9.0
 beautifulsoup4==4.12.3
 twilio==8.11.0
+aiofiles==23.2.1
